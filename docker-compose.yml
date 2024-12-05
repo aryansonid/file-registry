@@ -1,0 +1,24 @@
+services:
+  ipfs:
+    image: ipfs/kubo:latest
+    container_name: ipfs_node
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+      - "4001:4001"
+    volumes:
+      - ./ipfsdata:/data/ipfs
+    restart: unless-stopped
+    environment:
+      IPFS_PATH: /data/ipfs
+
+  go-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: file_registry_api
+    ports:
+      - "8081:8081"
+    depends_on:
+      - ipfs
+    restart: unless-stopped
